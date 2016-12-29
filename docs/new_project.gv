@@ -1,0 +1,81 @@
+digraph G {
+graph [label="New Project, CpPlugins & BBTK", labelloc=t, labeljust=c, dpi = 100]
+rankdir=UD;
+node [fontsize=12, shape=record]
+edge [fontsize=12]
+ScriptFormat[label="ScriptFormat\ncpPlugins or BBTK" , fontsize=12, shape = ellipse];
+#ScriptCpPlugins[label=ScriptCpPlugins, fontsize=12, shape = ellipse];
+#ProcessingBBTK[label=ProcessingBBTK, fontsize=12, shape = ellipse];
+#AortaWallBBTK[label=AortaWallBBTK, fontsize=12, shape = ellipse];
+subgraph cluster_ScriptCpPlugins_graph{
+                        label ="ScriptCpPlugins";
+                        labelloc=t;
+                        labeljust=c;
+                        cpPlgins_BMS [label="BMS\n Binary map salience" shape=Mrecord];
+                        cpPlgins_Gauss [label="Gaussian smoothing" shape=Mrecord];
+                        cpPlgins_Conection [label="Confident connection growth" shape=Mrecord];
+                        cpPlgins_Mask [label="Mask" shape=Mrecord];
+                        cpPlgins_Dilation [label="Dilation filter" shape=Mrecord];
+                        cpPlgins_M_Flux [label="M-Flux" shape=Mrecord];
+                        cpPlgins_Dijkstra [label="Dijkstra Algorithm" shape=Mrecord];
+                        {rank=same; cpPlgins_BMS,cpPlgins_Gauss }
+                        {rank=same; cpPlgins_Conection,cpPlgins_Mask }
+                        {rank=same; cpPlgins_Dilation,cpPlgins_M_Flux }
+}
+subgraph cluster_ProcessingBBTK_graph{
+                        label ="ProcessingBBTK";
+                        labelloc=t;
+                        labeljust=c;
+                        BBTK_Spheres [label="Spheres over the axis" shape=Mrecord];
+                        BBTK_Growth [label="Region growth algorithm" shape=Mrecord];
+                        {rank=same; BBTK_Spheres,BBTK_Growth }
+}
+subgraph cluster_AortaWallBBTK_graph{
+                        label ="AortaWallBBTK";
+                        labelloc=t;
+                        labeljust=r;
+                        BBTK_Dilation [label="Dilation filter" shape=Mrecord];
+                        BBTK_Substraction [label="Substraction\nDilated - Not Dilated" shape=Mrecord];
+                        BBTK_Mask [label="Mask" shape=Mrecord];
+                        {rank=same; BBTK_Substraction,BBTK_Mask }
+}
+OriginalDICOM -> ScriptFormat [label=DICOMImage];
+ScriptFormat -> OriginalMHD [label=MHDImage];
+OriginalMHD -> Seeds[label=BBTK];
+#Seeds -> ScriptCpPlugins[label=plainText];
+Seeds -> cpPlgins_BMS[label=plainText];
+#ScriptCpPlugins_subgraph -- begin
+cpPlgins_BMS -> cpPlgins_Gauss;
+cpPlgins_Gauss -> cpPlgins_Conection;
+cpPlgins_Conection -> cpPlgins_Mask;
+cpPlgins_Mask -> cpPlgins_Dilation;
+cpPlgins_Dilation -> cpPlgins_M_Flux;
+cpPlgins_M_Flux -> cpPlgins_Dijkstra;
+#Results
+cpPlgins_Dilation -> SegmentationCpPlugins[label=MHDImage];
+cpPlgins_Dijkstra -> Axis[label=plainText];
+#ScriptCpPlugins_subgraph -- end
+
+#ScriptCpPlugins -> SegmentationCpPlugins[label=MHDImage];
+#ScriptCpPlugins -> Axis[label=plainText];
+#Axis -> ProcessingBBTK[label=plainText];
+Axis -> BBTK_Spheres[label=plainText];
+#ProcessingBBTK_graph -- begin
+BBTK_Spheres -> BBTK_Growth;
+#Results
+BBTK_Growth -> SegmentationBBTK[label=MHDImage];
+#ScriptCpPlugins_subgraph -- end
+#ProcessingBBTK -> SegmentationBBTK[label=MHDImage];
+#SegmentationCpPlugins -> AortaWallBBTK;
+#SegmentationBBTK -> AortaWallBBTK;
+SegmentationCpPlugins -> BBTK_Dilation;
+SegmentationBBTK -> BBTK_Dilation;
+#ProcessingBBTK_graph -- begin
+BBTK_Dilation -> BBTK_Substraction;
+BBTK_Substraction -> BBTK_Mask;
+#Results
+BBTK_Mask -> AortaWallCpPlugins;
+BBTK_Mask -> AortaWallBBTK;
+#ScriptCpPlugins_subgraph -- end
+#AortaWallBBTK -> AortaWall;
+}
