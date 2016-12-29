@@ -1,0 +1,39 @@
+digraph G {
+graph [label="Previous SegmentationCalcifications Project, BBTK", labelloc=t, labeljust=c, dpi = 100]
+rankdir=TB;
+node [fontsize=12, shape=record]
+edge [fontsize=12]
+
+BBTK_Validation [label="Calcification candidates \n validation \n (Interactive)" shape=Mrecord];
+BBTK_Validated [label="Calcifications validated" shape=record];
+
+subgraph cluster_ProcessingBBTK_graph{
+  color=invis;
+  label="";
+  BBTK_Seeds[label="Seeds\n(11 points)\n(Interactive)", fontsize=12, shape = Mrecord];
+  BBTK_Spline[label="Axis spline \n (100 points)", fontsize=12, shape = Mrecord];
+  BBTK_Spheres [label="Spheres over \nthe spline points" shape=Mrecord];
+  BBTK_Radius [label=" 5 radius for the spheres\n(Interactive)" shape=Mrecord];
+  BBTK_Convex [label="Convex connectivity\n algorithm" shape=Mrecord];
+  BBTK_Dilation [label="Dilation filter" shape=Mrecord];
+  BBTK_Growth [label="Region growth algorithm\nhigh gray scale value\npixels" shape=Mrecord];
+  BBTK_Candidates [label="Calcification candidates" shape=record];
+
+  {rank=same; BBTK_Seeds,BBTK_Spline }
+  {rank=same; BBTK_Spheres,BBTK_Radius }
+  {rank=same; BBTK_Convex,BBTK_Dilation }
+  {rank=same; BBTK_Growth,BBTK_Candidates}
+}
+
+
+OriginalMHD -> BBTK_Seeds;
+BBTK_Seeds -> BBTK_Spline;
+BBTK_Spline -> BBTK_Spheres;
+BBTK_Spheres -> BBTK_Radius;
+BBTK_Radius -> BBTK_Convex;
+BBTK_Convex -> BBTK_Dilation
+BBTK_Dilation -> BBTK_Growth;
+BBTK_Growth -> BBTK_Candidates;
+BBTK_Candidates -> BBTK_Validation;
+BBTK_Validation -> BBTK_Validated;
+}

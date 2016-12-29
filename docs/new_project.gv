@@ -7,6 +7,7 @@ ScriptFormat[label="ScriptFormat\ncpPlugins or BBTK" , fontsize=12, shape = elli
 #ScriptCpPlugins[label=ScriptCpPlugins, fontsize=12, shape = ellipse];
 #ProcessingBBTK[label=ProcessingBBTK, fontsize=12, shape = ellipse];
 #AortaWallBBTK[label=AortaWallBBTK, fontsize=12, shape = ellipse];
+Seeds[label="Seeds\n(3 points)\n(Interactive)", fontsize=12, shape = ellipse];
 subgraph cluster_ScriptCpPlugins_graph{
                         label ="ScriptCpPlugins";
                         labelloc=t;

@@ -1,0 +1,45 @@
+digraph G {
+graph [label="Previous AortaWall Project, BBTK", labelloc=t, labeljust=c, dpi = 100]
+rankdir=UD;
+node [fontsize=12, shape=record]
+edge [fontsize=12]
+AortaWallDeformation[label="Visualization of\nthe wall deformation", fontsize=12, shape = record];
+subgraph cluster_ProcessingBBTK_graph{
+                        label ="Processing BBTK";
+                        labelloc=t;
+                        labeljust=c;
+                        BBTK_Seeds[label="Seeds\n(15 points)\n(Interactive)", fontsize=12, shape = Mrecord];
+                        BBTK_Spheres [label="Spheres over the seeds" shape=Mrecord];
+                        BBTK_Radius [label="Radius of the spheres\n(Interactive)" shape=Mrecord];
+                        BBTK_Convex [label="Convex connectivity\n algorithm" shape=Mrecord];
+                        BBTK_Dilation [label="Dilation filter" shape=Mrecord];
+                        BBTK_Substraction [label="Substraction\nDilated - Not Dilated" shape=Mrecord];
+                        BBTK_Mask [label="Mask" shape=Mrecord];
+                        {rank=same; BBTK_Spheres,BBTK_Radius }
+                        {rank=same; BBTK_Convex,BBTK_Dilation }
+                        {rank=same; BBTK_Substraction,BBTK_Mask }
+}
+subgraph cluster_RegistrationMATLAB_graph{
+                        label ="Processing Matlab";
+                        labelloc=t;
+                        labeljust=c;
+                        OriginalMHD_other_phase [label="OriginalMHD\n(other phase)" shape=record];
+                        Matlab_Registration [label="Registration of the phases" shape=Mrecord];
+                        Matlab_Deformation_Field [label="Deformation vector field\n calculation" shape=Mrecord];
+                        {rank=same; Matlab_Registration,Matlab_Deformation_Field }
+}
+
+OriginalMHD -> BBTK_Seeds;
+OriginalMHD -> Matlab_Registration;
+OriginalMHD_other_phase -> Matlab_Registration;
+Matlab_Registration -> Matlab_Deformation_Field;
+BBTK_Seeds -> BBTK_Spheres;
+BBTK_Spheres -> BBTK_Radius;
+BBTK_Radius -> BBTK_Convex;
+BBTK_Convex -> BBTK_Dilation
+BBTK_Dilation -> BBTK_Substraction;
+BBTK_Substraction -> BBTK_Mask;
+BBTK_Mask -> AortaWall;
+AortaWall -> AortaWallDeformation;
+Matlab_Deformation_Field -> AortaWallDeformation;
+}
