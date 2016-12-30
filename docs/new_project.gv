@@ -1,13 +1,14 @@
+#-------------Written by Sergio Daniel Hernandez Charpak-------------
 digraph G {
+#-------------Graph Label and General Definitions-------------
 graph [label="New Project, CpPlugins & BBTK", labelloc=t, labeljust=c, dpi = 100]
 rankdir=UD;
 node [fontsize=12, shape=record]
 edge [fontsize=12]
+#-------------Custom Nodes-------------
 ScriptFormat[label="ScriptFormat\ncpPlugins or BBTK" , fontsize=12, shape = ellipse];
-#ScriptCpPlugins[label=ScriptCpPlugins, fontsize=12, shape = ellipse];
-#ProcessingBBTK[label=ProcessingBBTK, fontsize=12, shape = ellipse];
-#AortaWallBBTK[label=AortaWallBBTK, fontsize=12, shape = ellipse];
 Seeds[label="Seeds\n(3 points)\n(Interactive)", fontsize=12, shape = ellipse];
+#-------------Clusters-------------
 subgraph cluster_ScriptCpPlugins_graph{
                         label ="ScriptCpPlugins";
                         labelloc=t;
@@ -40,10 +41,10 @@ subgraph cluster_AortaWallBBTK_graph{
                         BBTK_Mask [label="Mask" shape=Mrecord];
                         {rank=same; BBTK_Substraction,BBTK_Mask }
 }
+#-------------Connections-------------
 OriginalDICOM -> ScriptFormat [label=DICOMImage];
 ScriptFormat -> OriginalMHD [label=MHDImage];
 OriginalMHD -> Seeds[label=BBTK];
-#Seeds -> ScriptCpPlugins[label=plainText];
 Seeds -> cpPlgins_BMS[label=plainText];
 #ScriptCpPlugins_subgraph -- begin
 cpPlgins_BMS -> cpPlgins_Gauss;
@@ -56,19 +57,12 @@ cpPlgins_M_Flux -> cpPlgins_Dijkstra;
 cpPlgins_Dilation -> SegmentationCpPlugins[label=MHDImage];
 cpPlgins_Dijkstra -> Axis[label=plainText];
 #ScriptCpPlugins_subgraph -- end
-
-#ScriptCpPlugins -> SegmentationCpPlugins[label=MHDImage];
-#ScriptCpPlugins -> Axis[label=plainText];
-#Axis -> ProcessingBBTK[label=plainText];
 Axis -> BBTK_Spheres[label=plainText];
 #ProcessingBBTK_graph -- begin
 BBTK_Spheres -> BBTK_Growth;
 #Results
 BBTK_Growth -> SegmentationBBTK[label=MHDImage];
 #ScriptCpPlugins_subgraph -- end
-#ProcessingBBTK -> SegmentationBBTK[label=MHDImage];
-#SegmentationCpPlugins -> AortaWallBBTK;
-#SegmentationBBTK -> AortaWallBBTK;
 SegmentationCpPlugins -> BBTK_Dilation[label="MHDImage" ];
 SegmentationBBTK -> BBTK_Dilation[label="MHDImage" ];
 #ProcessingBBTK_graph -- begin
@@ -78,5 +72,4 @@ BBTK_Substraction -> BBTK_Mask;
 BBTK_Mask -> AortaWallCpPlugins;
 BBTK_Mask -> AortaWallBBTK;
 #ScriptCpPlugins_subgraph -- end
-#AortaWallBBTK -> AortaWall;
 }
