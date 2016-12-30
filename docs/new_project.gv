@@ -69,8 +69,8 @@ BBTK_Growth -> SegmentationBBTK[label=MHDImage];
 #ProcessingBBTK -> SegmentationBBTK[label=MHDImage];
 #SegmentationCpPlugins -> AortaWallBBTK;
 #SegmentationBBTK -> AortaWallBBTK;
-SegmentationCpPlugins -> BBTK_Dilation;
-SegmentationBBTK -> BBTK_Dilation;
+SegmentationCpPlugins -> BBTK_Dilation[label="MHDImage" ];
+SegmentationBBTK -> BBTK_Dilation[label="MHDImage" ];
 #ProcessingBBTK_graph -- begin
 BBTK_Dilation -> BBTK_Substraction;
 BBTK_Substraction -> BBTK_Mask;

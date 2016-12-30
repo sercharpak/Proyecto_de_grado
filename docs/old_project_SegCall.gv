@@ -10,10 +10,11 @@ BBTK_Validated [label="Calcifications validated" shape=record];
 subgraph cluster_ProcessingBBTK_graph{
   color=invis;
   label="";
-  BBTK_Seeds[label="Seeds\n(11 points)\n(Interactive)", fontsize=12, shape = Mrecord];
+  BBTK_Seeds[label="Seeds\n(~10 points)\n(Interactive)", fontsize=12, shape = Mrecord];
   BBTK_Spline[label="Axis spline \n (100 points)", fontsize=12, shape = Mrecord];
   BBTK_Spheres [label="Spheres over \nthe spline points" shape=Mrecord];
   BBTK_Radius [label=" 5 radius for the spheres\n(Interactive)" shape=Mrecord];
+  BBTK_Crop [label="Crop" shape=Mrecord];
   BBTK_Convex [label="Convex connectivity\n algorithm" shape=Mrecord];
   BBTK_Dilation [label="Dilation filter" shape=Mrecord];
   BBTK_Growth [label="Region growth algorithm\nhigh gray scale value\npixels" shape=Mrecord];
@@ -30,7 +31,8 @@ OriginalMHD -> BBTK_Seeds;
 BBTK_Seeds -> BBTK_Spline;
 BBTK_Spline -> BBTK_Spheres;
 BBTK_Spheres -> BBTK_Radius;
-BBTK_Radius -> BBTK_Convex;
+BBTK_Radius -> BBTK_Crop;
+BBTK_Crop -> BBTK_Convex;
 BBTK_Convex -> BBTK_Dilation
 BBTK_Dilation -> BBTK_Growth;
 BBTK_Growth -> BBTK_Candidates;
