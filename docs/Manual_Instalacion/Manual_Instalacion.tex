@@ -1,0 +1,496 @@
+\documentclass[12pt]{article}
+
+%PACKAGES
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage[english]{babel}
+\usepackage[toc,page]{appendix}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{subfig}
+\usepackage{multicol}
+
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage[left=3cm,top=3cm,right=3cm,nohead,nofoot]{geometry}
+\usepackage{braket}
+\usepackage{datenumber}
+\usepackage{placeins}
+\usepackage{amsmath} % Required for some math elements 
+\usepackage{epsfig}
+
+%COMMANDS
+
+\begin{document}
+
+
+\begin{center}
+\begin{figure}
+\centering%
+\epsfig{file=general/logo-andes.jpg,scale=0.75}%
+\end{figure}
+\vspace{3 cm}
+\FloatBarrier
+
+
+\begin{center}
+\Huge
+Installation manual for the segmentation of the aorta artery project (cpPlugins + CreaTools)
+\\  
+\vspace{1 cm}
+\Large Sergio Daniel Hern\'{a}ndez Charpak
+
+\large
+%200922618
+
+\vspace{1cm}
+\Large
+Advisors:\\
+Marcela Hernández Hoyos\footnote{Universidad de los Andes, Bogot\'{a}, Colombia}\\
+Leonardo Fl\'{o}rez\footnote{Pontificia Universidad Javeriana, Bogot\'{a}, Colombia}\\
+Eduardo D\'{a}vila\footnote{Laboratoire CREATIS, Lyon, France}\\
+
+
+\normalsize
+\vspace{1cm}
+
+\today
+
+\vspace{1 cm}
+\small 
+Universidad de los Andes\\
+Facultad de Ingenier\'{i}a, Departamento de Ingenier\'{i}a de Sistemas y Computaci\'{o}n\\
+Bogot\'{a}, Colombia\\
+\end{center}
+
+
+\normalsize
+\end{center}
+
+\newpage
+
+\section{Installation manual}
+%\label{App:install}
+
+The following installation instructions are for a Linux platform operating system. They are
+tested for Ubuntu 14.04 from Canonical. Working versions for other operating system platforms
+such as Microsoft Windows and Apple MacOS are currently under development as there are still some bugs
+to fix. The project uses CMake as compilation helper. It should eventually compile on the three major
+box flavors (linux, windows, mac).
+
+\subsection{Libraries: CMake, VTK, ITK, QT}
+
+\begin{itemize}
+\item CMake (version $\geq$ 2.8)
+\end{itemize}
+\begin{par}
+CMake is necessary as it is the control of the software compilation process. Our implementation uses
+the most recent version at the time, 3.7. The interactive option of CMake, ccmake is recommended and
+was used during the current installation. You can get the latest stable version from the
+\href{https://cmake.org/cmake/resources/software.html}{\color{blue} Cmake Download Page}
+\footnote{\url{https://cmake.org/cmake/resources/software.html}}. A C++ compiler such as \textit{g++}
+and \textit{make} are necessary. Once the source code is downloaded and extracted, to install cmake,
+run the \textit{bootstrap} script (here use the \textit{--help} option to see the supported options,
+such as the \textit{--prefix=custom install directory path} option), then \textit{make} and
+\textit{sudo make install} (or \textit{make install} if a custom path was selected and no privileges
+are required). An additional library (\textit{libncurses5-dev}) may be necessary for ccmake. \\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+  1. $ sudo apt-get install libncurses5-dev
+  2. $ wget https://cmake.org/files/v3.7/cmake-3.7.1.tar.gz
+  3. $ tar -xvf cmake-3.7.1.tar.gz
+  4. $ cd cmake-3.7.1/
+  5. $ ./bootstrap
+  6. $ make
+  7. $ sudo make install
+  
+\end{lstlisting}
+
+\end{par}
+
+\normalsize
+
+\begin{itemize}
+\item Qt (version $=$ 4.85)
+\end{itemize}
+\begin{par}
+Although it is possible to download and compile the source code from
+\href{http://download.qt.io/archive/ }{\color{blue} Qt download page}
+\footnote{\url{http://download.qt.io/archive/ }}, specifically from the \href{http://download.qt.io/archive/qt/4.8/4.8.5/}{\color{blue} Qt 4.85 version folder}
+\footnote{\url{http://download.qt.io/archive/qt/4.8/4.8.5/}}, it is preferable to install the
+corresponding package through the linux repository running the following command.\\
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+  8. $ sudo apt-get install qt4-dev-tools
+  
+\end{lstlisting}
+\end{par}
+\normalsize
+
+\begin{itemize}
+\item VTK (version $=$ 7.0)
+\end{itemize}
+\begin{par}
+First download the source code from the 
+\href{http://www.vtk.org/download/ }{\color{blue} VTK download page}
+\footnote{\url{http://www.vtk.org/download/}}, decompress it and create a new folder (where
+the code will be built). Move to the new folder and run ccmake from build folder with argument the
+source folder. Press \textit{c} to configure and then press \textit{t} to display the advanced
+option and be sure that the following options have the values:\\
+
+\noindent
+Module\_vtkGUISupportQt: ON\\
+Module\_vtkGUISupportQtOpenGL:ON\\
+Module\_vtkGUISupportQtSQL: OFF\\
+Module\_vtkGUISupportQtWebkit: OFF\\
+CMAKE\_BUILD\_TYPE: MinSizeRel\\
+BUILD\_SHARED\_LIBS : ON\\
+BUILD\_DOCUMENTATION : OFF\\
+BUILD\_EXAMPLES : OFF\\
+BUILD\_TESTING : OFF\\
+
+Then configure again by pressing \textit{c} and generate the Makefile by pressing \textit{g}.
+Then build the code by running \textit{make}  and finally \textit{make install}. VTK will be installed normally in the folder: \textit{/home/(your username)/local/lib/cmake/vtk-7.0}, in my case: \textit{/home/laptop/local/lib/cmake/vtk-7.0}.\\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+  9. $ wget http://www.vtk.org/files/release/7.0/VTK-7.0.0.tar.gz
+ 10. $ tar -xvf VTK-7.0.0.tar.gz
+ 11. $ mkdir VTK_Built
+ 12. $ cd VTK_Built
+ 13. $ ccmake ../VTK-7.0.0
+ 14. Press c 
+ 15. Press t
+ 16. Make sure the following options have the correct values:
+     Module_vtkGUISupportQt: ON
+     Module_vtkGUISupportQtOpenGL:ON
+     Module_vtkGUISupportQtSQL: OFF
+     Module_vtkGUISupportQtWebkit: OFF
+     CMAKE_BUILD_TYPE: MinSizeRel
+     BUILD_SHARED_LIBS : ON
+     BUILD_DOCUMENTATION : OFF
+     BUILD_EXAMPLES : OFF
+     BUILD_TESTING : OFF
+ 17. Press g
+ 18. $ make
+ 19. $ make install
+  
+\end{lstlisting}
+\end{par}
+\normalsize
+
+
+
+\begin{itemize}
+\item ITK (version $=$ 4.10)
+\end{itemize}
+\begin{par}
+Download the source code from the 
+\href{https://itk.org/ITK/resources/software.html }{\color{blue} ITK download page}
+\footnote{\url{https://itk.org/ITK/resources/software.html}}, decompress it and create a new folder (where
+the code will be built). Move to the new folder and run ccmake from build folder with argument the
+source folder. Press \textit{c} to configure and then press \textit{t} to display the advanced
+option and be sure that the following options have the values:\\
+
+\noindent
+VTK\_DIR : Folder where VTK is installed. In my case it was: /home/laptop/local/lib/cmake/vtk-7.0\\
+Module\_ITKReview : ON\\
+Module\_ITKVtkGlue : OFF\\
+CMAKE\_BUILD\_TYPE: MinSizeRel\\
+BUILD\_SHARED\_LIBS : ON\\
+BUILD\_DOCUMENTATION : OFF\\
+BUILD\_EXAMPLES : OFF\\
+BUILD\_TESTING : OFF\\
+
+Then configure again by pressing \textit{c} and generate the Makefile by pressing \textit{g}.
+Then build the code by running \textit{make}  and finally \textit{make install}. ITK will be
+installed normally in the folder: \textit{/home/(your username)/local/lib/cmake/ITK-4.10}, in
+my case: \textit{/home/laptop/local/lib/cmake/ITK-4.10}.\\
+
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 20. $ wget http://downloads.sourceforge.net/project/itk/itk/4.10/
+        InsightToolkit-4.10.1.tar.gz?r=https%3A%2F%2Fitk.org%2FITK%2
+        Fresources%2Fsoftware.html&ts=1483297536&use_mirror=superb-dca2
+ 21. $ tar -xvf InsightToolkit-4.10.1.tar.gz
+ 22. $ mkdir ITK_Built
+ 23. $ cd ITK_Built
+ 24. $ ccmake ../InsightToolkit-4.10.1
+ 25. Press c 
+ 26. Press t
+ 27. Make sure the following options have the correct values:
+     VTK_DIR : Folder where VTK is installed, for 
+     example: /home/laptop/local/lib/cmake/vtk-7.0
+     Module_ITKReview : ON
+     Module_ITKVtkGlue : OFF
+     CMAKE_BUILD_TYPE: MinSizeRel
+     BUILD_SHARED_LIBS : ON
+     BUILD_DOCUMENTATION : OFF
+     BUILD_EXAMPLES : OFF
+     BUILD_TESTING : OFF
+ 28. Press g
+ 29. $ make
+ 30. $ make install
+  
+\end{lstlisting}
+
+\end{par}
+\normalsize
+
+
+
+\subsection{cpPlugins with plugins: FrontAlgorithms, cpPluginsLeFaucon}
+
+Professor Leonardo Fl\'{o}rez from Pontifica Universidad Javeriana is the main developper for cpPlugins and its plugins. \href{mailito:florez-l@javeriana.edu.co}{\color{blue} Contact Leonardo}
+\footnote{\url{florez-l@javeriana.edu.co}} to have access to the source code for cpPlugins, FrontAlgorithms and cpPluginsLeFaucon and in case of having any difficulty related with cpPlugins, FrontAlgorithms and cpPluginsLeFaucon.\\
+
+Once downloaded the source code for cpPlugins, FrontAlgorithms and cpPluginsLeFaucon proceed with the following steps for each project.\\
+
+\begin{itemize}
+\item cpPlugins
+\end{itemize}
+\begin{par}
+Decompress the source code and create a new folder (where
+the code will be built). Move to the new folder folder and run ccmake from the build folder with argument the
+source folder. Press \textit{c} to configure and be sure that the following options have the values. You may have to press c every time an option is configured:\\
+
+\noindent
+BUILD\_PipelineEditor : ON\\
+BUILD\_EXAMPLES : ON\\
+BUILD\_MPRSeeds : ON\\
+BUILD\_MPRViewer : ON\\
+BUILD\_PipelineEditor : ON\\
+BUILD\_SIMPLE\_TESTS : ON\\
+CMAKE\_BUILD\_TYPE : Debug\\
+CMAKE\_INSTALL\_PREFIX : /usr/local\\
+ITK\_DIR : Folder where ITK is installed, for example: /home/laptop/local/lib/cmake/ITK-4.10
+QT\_QMAKE\_EXECUTABLE : /usr/bin/qmake\\
+USE\_QT4 : ON\\
+VTK\_DIR : Folder where VTK is installed, for example: /home/laptop/local/lib/cmake/vtk-7.0\\
+cpPlugins\_CONFIG\_NUMBER\_OF\_FIL : 10\\
+cpPlugins\_CONFIG\_PROCESS\_DIMEN : 1;2;3\\ 
+cpPlugins\_CONFIG\_VISUAL\_DIMENS : 2;3\\
+cpPlugins\_Qt4\_VTKWidget : QVTKWidget\\
+
+Then configure again by pressing \textit{c} and generate the Makefile by pressing \textit{g}.
+Then build the code by running \textit{make}.\\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 31. $ mkdir cpPlugins_Built
+ 32. $ cd cpPlugins_Built
+ 33. $ ccmake folder where the source of cpPlugins is.
+ 34. Press c 
+ 35. Make sure the following options have the correct values:
+     BUILD_PipelineEditor : ON
+     BUILD_EXAMPLES : ON
+     BUILD_MPRSeeds : ON
+     BUILD_MPRViewer : ON
+     BUILD_PipelineEditor : ON
+     BUILD_SIMPLE_TESTS : ON
+     CMAKE_BUILD_TYPE : Debug
+     CMAKE_INSTALL_PREFIX : /usr/local
+     ITK_DIR : Folder where ITK is installed, for 
+      example: /home/laptop/local/lib/cmake/ITK-4.10
+     QT_QMAKE_EXECUTABLE : /usr/bin/qmake
+     USE_QT4 : ON
+     VTK_DIR : Folder where VTK is installed, for 
+      example: /home/laptop/local/lib/cmake/vtk-7.0
+     cpPlugins_CONFIG_NUMBER_OF_FIL : 10
+     cpPlugins_CONFIG_PROCESS_DIMEN : 1;2;3   
+     cpPlugins_CONFIG_VISUAL_DIMENS : 2;3
+     cpPlugins_Qt4_VTKWidget : QVTKWidget
+ 36. Press g
+ 37. $ make
+ 
+\end{lstlisting}
+
+\end{par}
+\normalsize
+
+\begin{itemize}
+\item FrontAlgorithms
+\end{itemize}
+\begin{par}
+
+Decompress the source code and create a new folder (where
+the code will be built). Move to the new folder folder and run ccmake from the build folder with argument the
+source folder. Press \textit{c} to configure and be sure that the following options have the values. You may have to press c every time an option is configured:\\
+
+\noindent
+ BUILD\_EXAMPLES : OFF\\
+ BUILD\_EXPERIMENTS : OFF\\
+ BUILD\_ExperimentationPlugins : OFF\\
+ CMAKE\_BUILD\_TYPE : Debug\\
+ CMAKE\_INSTALL\_PREFIX : /usr/local\\
+ ITK\_DIR : Folder where ITK is installed, for example: /home/laptop/local/lib/cmake/ITK-4.10\\
+ USE\_cpPlugins : ON\\
+ VTK\_DIR : Folder where VTK is installed, for example: /home/laptop/local/lib/cmake/vtk-7.00\\
+ cpPlugins\_BaseLibraries : cpPlugins;cpExtensions;cpPluginsDataObjects;cpBaseQtApplication\\
+ cpPlugins\_DIR : Folder where cpPlugins is built.\\
+
+Then configure again by pressing \textit{c} and generate the Makefile by pressing \textit{g}.
+Then build the code by running \textit{make}.\\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 38. $ mkdir FrontAlgorithms_Built
+ 39. $ cd FrontAlgorithms_Built
+ 40. $ ccmake folder where the source of FrontAlgorithms is.
+ 41. Press c 
+ 42. Make sure the following options have the correct values:
+      BUILD_EXAMPLES : OFF
+      BUILD_EXPERIMENTS : OFF
+      BUILD_ExperimentationPlugins : OFF
+      CMAKE_BUILD_TYPE : Debug
+      CMAKE_INSTALL_PREFIX : /usr/local
+      ITK_DIR : Folder where ITK is installed, for 
+       example: /home/laptop/local/lib/cmake/ITK-4.10
+      USE_cpPlugins : ON
+      VTK_DIR : Folder where VTK is installed, for 
+       example: /home/laptop/local/lib/cmake/vtk-7.00
+      cpPlugins_BaseLibraries : cpPlugins;cpExtensions;cpPluginsDataObjects;
+       cpBaseQtApplication
+      cpPlugins_DIR : Folder where cpPlugins is built.
+ 43. Press g
+ 44. $ make
+ 
+\end{lstlisting}
+
+
+\end{par}
+\normalsize
+
+\begin{itemize}
+\item cpPluginsLeFaucon
+\end{itemize}
+\begin{par}
+
+Decompress the source code and create a new folder (where
+the code will be built). Move to the new folder folder and run ccmake from the build folder with argument the
+source folder. Press \textit{c} to configure and be sure that the following options have the values. You may have to press c every time an option is configured:\\
+
+\noindent
+ CMAKE\_BUILD\_TYPE : Debug\\
+ CMAKE\_INSTALL\_PREFIX : /usr/local\\
+ ITK\_DIR : Folder where ITK is installed, for example: /home/laptop/local/lib/cmake/ITK-4.10\\
+ USE\_cpPlugins : ON\\
+ VTK\_DIR : Folder where VTK is installed, for example: /home/laptop/local/lib/cmake/vtk-7.00\\
+ cpPlugins\_BaseLibraries : cpPlugins;cpExtensions;cpPluginsDataObjects;cpBaseQtApplication\\
+ cpPlugins\_DIR : Folder where cpPlugins is built.\\
+
+Then configure again by pressing \textit{c} and generate the Makefile by pressing \textit{g}.
+Then build the code by running \textit{make}.\\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 38. $ mkdir cpPluginsLeFaucon_Built
+ 39. $ cd cpPluginsLeFaucon_Built
+ 40. $ ccmake folder where the source of cpPluginsLeFaucon is.
+ 41. Press c 
+ 42. Make sure the following options have the correct values:
+      CMAKE_BUILD_TYPE : Debug
+      CMAKE_INSTALL_PREFIX : /usr/local
+      ITK_DIR : Folder where ITK is installed, for 
+       example: /home/laptop/local/lib/cmake/ITK-4.10
+      USE_cpPlugins : ON
+      VTK_DIR : Folder where VTK is installed, for 
+       example: /home/laptop/local/lib/cmake/vtk-7.00
+      cpPlugins_BaseLibraries : cpPlugins;cpExtensions;cpPluginsDataObjects;
+       cpBaseQtApplication
+      cpPlugins_DIR : Folder where cpPlugins is built.
+ 43. Press g
+ 44. $ make
+ 
+\end{lstlisting}
+
+\end{par}
+\normalsize
+
+\subsection{BBTK and CreaTools}
+
+Researcher Eduardo D\'{a}vila from the CREATIS Laboratory (Lyon, France) is the main developper for BBTK and CreaTools. \href{mailito:Eduardo.Davila@creatis.insa-lyon.fr}{\color{blue} Contact Eduardo}
+\footnote{\url{Eduardo.Davila@creatis.insa-lyon.fr}} if there is any difficulty related with BBTK and CreaTools.\\
+
+\begin{itemize}
+\item CreaTools
+\end{itemize}
+
+Simply download the CreaTools installation script at the \href{https://www.creatis.insa-lyon.fr/site/en/CreatoolsDownload.html}{\color{blue} CreaTools download page}
+\footnote{\url{https://www.creatis.insa-lyon.fr/site/en/CreatoolsDownload.html}} and run it with administration privileges. The script will install the libraries necessary for CreaTools and the different tools in the system. \\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 45. $ wget http://www.creatis.insa-lyon.fr/software/public/creatools/
+        creaTools/Install-Creatools-Bin-Release.sh 
+ 46. $ source ./Install-Creatools-Bin-Release.sh 
+\end{lstlisting}
+
+\begin{itemize}
+\item BBTK part from our project
+\end{itemize}
+
+Download our project source. In order to do it \href{mailito:sd.hernandez204@uniandes.edu.co}{\color{blue} contact Sergio}\footnote{\url{sd.hernandez204@uniandes.edu.co}}. Decompress it. The project has a folder structure Images, Results, script.\\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 47. Download the project source
+ 48. Decompress the project source
+\end{lstlisting}
+
+\subsection{Final adjustments}
+
+In order to connect cpPlugins with our project a few more steps are necessary. First go to the script
+folder of our project, then create a link to the executable for cpPlugins with the command 
+\textit{ls -s TARGET LINK\_NAME}and finally create a file called \textit{cpPlugins\_PATHS} which will
+contain the paths for the built versions of cpPlugins, FrontAlgorithms and cpPluginsLeFaucon.\\
+
+In summary:\\
+
+\noindent
+\small
+\begin{lstlisting}[language=bash]
+ 49. $ cd OurProject/script
+ 50. $ ln -s pathToBuiltCpPlugins/cpPlugins_plugins_ExecutePipeline 
+        cpPlugins_plugins_ExcecutePipeline
+ 51. Create a plain text file called cpPlugins_PATHS with:
+     path to our project/script (current path)
+     path to the folder of the built version of FrontAlgorithms
+     path to the folder of the built version of cpPlugins
+     path to the folder of the built version of cpPluginsLeFaucon
+\end{lstlisting}
+
+Once all theses steps have been followed, our project should be ready to be executed.
+
+
+
+\normalsize
+\end{document} 
